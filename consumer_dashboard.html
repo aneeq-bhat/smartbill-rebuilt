@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block content %}<h1 class="h2 mb-4">Your orders</h1><div class="panel table-responsive"><table class="table mb-0"><thead><tr><th>Order</th><th>Shop</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for o in orders %}<tr><td>#{{ o.id }}</td><td>{{ o.shop_name }}</td><td>₹{{ '%.2f'|format(o.total) }}</td><td>{{ o.status }}</td><td>{{ o.created_at }}</td></tr>{% else %}<tr><td colspan="5">You have not placed any orders.</td></tr>{% endfor %}
+</tbody></table></div><a class="btn btn-primary mt-3" href="/marketplace">Browse marketplace</a>{% endblock %}

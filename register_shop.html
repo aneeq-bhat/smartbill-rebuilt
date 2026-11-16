@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}<div class="auth-card mx-auto"><h1 class="h3">Register your shop</h1><p class="text-secondary">Your account remains pending until approved by the platform administrator.</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+{% for field,label,type in [('name','Your name','text'),('email','Email','email'),('shop_name','Shop name','text'),('password','Password (12+ characters)','password')] %}
+<label class="form-label">{{ label }}</label><input class="form-control mb-3" type="{{ type }}" name="{{ field }}" required>
+{% endfor %}<button class="btn btn-primary w-100">Submit registration</button></form></div>{% endblock %}
