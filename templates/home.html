@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}SmartBill | Business, billing and shopping{% endblock %}
+{% block content %}
+<section class="hero p-4 p-md-5 rounded-4 mb-4">
+ <span class="eyebrow">BUSINESS MANAGEMENT · DIGITAL COMMERCE</span>
+ <h1 class="display-4 fw-bold mt-3">One platform.<br>Three connected experiences.</h1>
+ <p class="lead col-lg-8">Billing and inventory for local businesses, with a marketplace for their customers.</p>
+ <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-light btn-lg" href="/shopkeeper/register">Register your shop</a><a class="btn btn-outline-light btn-lg" href="/marketplace">Explore marketplace</a></div>
+</section>
+<div class="row g-3">
+ <div class="col-md-4"><div class="panel h-100"><h3>Super Admin</h3><p>Manage platform access and approve shops.</p><a href="/admin/login">Admin sign in</a></div></div>
+ <div class="col-md-4"><div class="panel h-100"><h3>Shopkeepers</h3><p>Manage products, stock and customer records.</p><a href="/shopkeeper/login">Shopkeeper sign in</a></div></div>
+ <div class="col-md-4"><div class="panel h-100"><h3>Consumers</h3><p>Browse listed products and place orders.</p><a href="/consumer/register">Create consumer account</a></div></div>
+</div>
+{% endblock %}
