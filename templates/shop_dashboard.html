@@ -1,3 +1,32 @@
-{% extends "base.html" %}{% block content %}<h1 class="h2">{{ shop.name }}</h1><p class="text-secondary">Shop workspace</p>
-<div class="row g-3 mb-4">{% for label,value in [('Products',stats.products),('Invoices',stats.invoices),('Customers',stats.customers)] %}<div class="col-md-4"><div class="panel"><div class="text-secondary">{{ label }}</div><div class="display-6">{{ value }}</div></div></div>{% endfor %}</div>
-<a class="btn btn-primary" href="/shopkeeper/products">Manage products</a>{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="h2">{{ shop.name }}</h1>
+<p class="text-secondary">Shop workspace</p>
+
+<div class="row g-3 mb-4">
+    {% for label,value in [
+        ('Products',stats.products),
+        ('Orders',stats.orders),
+        ('Invoices',stats.invoices),
+        ('Customers',stats.customers)
+    ] %}
+    <div class="col-md-3">
+        <div class="panel">
+            <div class="text-secondary">{{ label }}</div>
+            <div class="display-6">{{ value }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-primary" href="{{ url_for('shop.products') }}">
+        Manage products
+    </a>
+    <a class="btn btn-success" href="{{ url_for('shop.orders') }}">
+        Manage orders
+    </a>
+</div>
+
+{% endblock %}
