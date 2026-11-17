@@ -1,0 +1,31 @@
+SMARTBILL BATCHES 18–20
+=======================
+Includes:
+18. GST reports with date filtering, rate-wise and HSN/SAC summaries, CSV export.
+19. Inventory reorder thresholds, stock adjustment workflow, and stock movement ledger.
+20. Date-filtered shop analytics, daily invoice trend, top-selling products and stock health.
+
+Apply from the SmartBill project root. Back up the project first. Extract this ZIP
+with folder paths preserved and overwrite the included files when prompted.
+
+Commands:
+  python -m pip install -r requirements.txt
+  python -m compileall -q app.py blueprints
+  python -m flask --app app init-inventory-analytics
+  python -m flask --app app --help
+
+Do NOT run init-db. The inventory migration is separate and safe to rerun.
+
+Routes added:
+  /shopkeeper/inventory
+  /shopkeeper/inventory/<product_id>/adjust
+  /shopkeeper/gst-reports/export.csv
+
+Important limitations:
+- Stock movement history starts at installation; old movements are not reconstructed.
+- Existing product editing can still set stock directly. Use Inventory > adjustment to
+  create auditable manual movements going forward.
+- GST reports are operational summaries, not GSTR filing/returns or professional tax advice.
+- Analytics uses invoice and marketplace order records separately; it does not deduplicate
+  revenue between those two channels.
+- No e-invoicing, e-way bill, GSTR filing, purchase register, input tax credit or RCM logic.

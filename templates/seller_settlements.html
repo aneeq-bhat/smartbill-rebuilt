@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Seller settlements · SmartBill{% endblock %}
+{% block content %}
+<section class="page-heading mb-4"><p class="eyebrow">SELLER ACCOUNT</p><h1>Business & settlements</h1><p class="text-secondary">Manage your business details and view earnings recorded for your shop.</p></section>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card p-3 h-100"><small class="text-secondary">Total seller earnings</small><h2>₹{{ '%.2f'|format((totals.net_total or 0)/100) }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 h-100"><small class="text-secondary">Outstanding ledger balance</small><h2>₹{{ '%.2f'|format((totals.outstanding or 0)/100) }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 h-100"><small class="text-secondary">Manually recorded as paid</small><h2>₹{{ '%.2f'|format((totals.recorded_paid or 0)/100) }}</h2></div></div>
+</div>
+<div class="alert alert-info">SmartBill is not connected to Razorpay Route yet. These are internal accounting records, not a promise or initiation of payout.</div>
+<div class="card p-4 mb-4">
+<h2 class="h4">Business profile</h2>
+<form method="post" class="row g-3">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="col-md-6"><label class="form-label">Legal business name</label><input class="form-control" name="legal_business_name" required maxlength="180" value="{{ onboarding.legal_business_name if onboarding else '' }}"></div>
+<div class="col-md-6"><label class="form-label">Business type</label><input class="form-control" name="business_type" maxlength="80" placeholder="Sole proprietor, partnership, company" value="{{ onboarding.business_type if onboarding else '' }}"></div>
+<div class="col-md-6"><label class="form-label">Business phone</label><input class="form-control" name="contact_phone" value="{{ onboarding.contact_phone if onboarding else '' }}"></div>
+<div class="col-md-6"><label class="form-label">Business address</label><input class="form-control" name="business_address" value="{{ onboarding.business_address if onboarding else '' }}"></div>
+<div class="col-12"><button class="btn btn-primary">Save business profile</button></div>
+</form>
+<div class="mt-3 small text-secondary">PAN: {{ onboarding.pan_status if onboarding else 'not_submitted' }} · Bank: {{ onboarding.bank_status if onboarding else 'not_submitted' }} · Address: {{ onboarding.address_status if onboarding else 'not_submitted' }} · Razorpay Route: {{ onboarding.route_status if onboarding else 'not_applied' }}</div>
+</div>
+<div class="card p-4"><h2 class="h4">Seller ledger</h2><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Order</th><th>Gross</th><th>Commission</th><th>Net earnings</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for item in ledger %}<tr><td>#{{ item.order_id }}</td><td>₹{{ '%.2f'|format(item.gross_paise/100) }}</td><td>₹{{ '%.2f'|format(item.commission_paise/100) }}</td><td>₹{{ '%.2f'|format(item.net_paise/100) }}</td><td><span class="badge text-bg-secondary">{{ item.status }}</span></td><td>{{ item.created_at }}</td></tr>{% else %}<tr><td colspan="6" class="text-secondary">No seller earnings have been recorded yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

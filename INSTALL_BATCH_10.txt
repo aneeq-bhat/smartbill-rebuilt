@@ -1,0 +1,8 @@
+SMARTBILL ADMIN ANALYTICS — BATCH 10
+
+Extract this archive into the project root, preserving the blueprints/ and templates/ paths.
+
+Adds private Super Admin route GET /admin/analytics and a navigation link visible only to super_admin.
+No database migration is required. No existing records are modified.
+
+Metrics distinguish order value from recognized revenue. Cancelled orders are excluded from order-value totals.

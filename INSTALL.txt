@@ -1,0 +1,23 @@
+SMARTBILL BATCH 12 — REFUNDS
+
+Prerequisite: Batch 11 Razorpay payment collection and payment_transactions table must be installed.
+
+1. Extract this ZIP into the project root.
+2. Run: python apply_batch_12.py
+3. Run once: python -m flask --app app init-refunds
+4. Configure a second Razorpay webhook URL:
+   https://YOUR-DOMAIN/admin/refunds/webhook
+   Subscribe to refund.processed and refund.failed.
+5. Use Razorpay TEST credentials first.
+
+The refund centre is Super Admin-only. It supports full/partial refund amounts, durable records,
+provider status updates and retry with the same persisted X-Refund-Idempotency key.
+
+IMPORTANT:
+- Refunds can only be initiated for captured payments.
+- A pending/unknown refund reserves refundable balance to prevent over-refunding.
+- Network failures are ambiguous; retry uses the same idempotency key and identical payload.
+- Refunds are initiated against the whole Razorpay payment transaction. For multi-shop carts,
+  this is not yet an automated per-seller refund allocation or Route reversal.
+- No seller payouts or Razorpay Route integration is included.
+- Never use live keys until tested end-to-end and reconciled.

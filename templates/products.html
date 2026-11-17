@@ -1,7 +1,39 @@
-{% extends "base.html" %}{% block content %}<h1 class="h2 mb-3">Products · {{ shop.name }}</h1>
-<div class="panel mb-4"><form method="post" class="row g-2 align-items-end"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-<div class="col-md-5"><label class="form-label">Product name</label><input class="form-control" name="name" required></div>
-<div class="col-md-3"><label class="form-label">Price (INR)</label><input class="form-control" type="number" name="price" min="0" step="0.01" required></div>
-<div class="col-md-2"><label class="form-label">Stock</label><input class="form-control" type="number" name="stock" min="0" required></div>
-<div class="col-md-2"><button class="btn btn-primary w-100">Add product</button></div></form></div>
-<div class="panel table-responsive"><table class="table mb-0"><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Marketplace</th></tr></thead><tbody>{% for p in products %}<tr><td>{{ p.name }}</td><td>₹{{ '%.2f'|format(p.price) }}</td><td>{{ p.stock_qty }}</td><td>{{ 'Listed' if p.is_listed else 'Hidden' }}</td></tr>{% else %}<tr><td colspan="4">No products added yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading">
+  <p class="eyebrow">SHOP MANAGEMENT</p>
+  <h1>Products & inventory</h1>
+  <p>Manage your catalogue, pricing, stock and marketplace visibility.</p>
+</section>
+<div class="panel mb-4">
+  <h2 class="h5 mb-3">Add a product</h2>
+  <form method="post" class="row g-3 align-items-end">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="col-md-5"><label class="form-label" for="new-name">Product name</label><input id="new-name" class="form-control" name="name" maxlength="180" required></div>
+    <div class="col-md-3"><label class="form-label" for="new-price">Price (INR)</label><input id="new-price" class="form-control" type="number" name="price" min="0" step="0.01" required></div>
+    <div class="col-md-2"><label class="form-label" for="new-stock">Opening stock</label><input id="new-stock" class="form-control" type="number" name="stock" min="0" step="1" required></div>
+    <div class="col-md-2"><label class="form-label">HSN/SAC</label><input class="form-control" name="hsn_sac" maxlength="8"></div><div class="col-md-2"><label class="form-label">GST rate %</label><input class="form-control" type="number" name="gst_rate" min="0" max="100" step="0.01" value="0"></div><div class="col-md-2"><button class="btn btn-primary w-100">Add product</button></div>
+  </form>
+</div>
+<div class="panel table-responsive">
+  <table class="table align-middle mb-0">
+    <thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Visibility</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for p in products %}
+      <tr>
+        <td colspan="5">
+          <form method="post" action="{{ url_for('shop.update_product', product_id=p.id) }}" class="row g-2 align-items-center">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="col-lg-4"><label class="visually-hidden" for="name-{{ p.id }}">Product name</label><input id="name-{{ p.id }}" class="form-control" name="name" value="{{ p.name }}" maxlength="180" required></div>
+            <div class="col-lg-2"><label class="visually-hidden" for="price-{{ p.id }}">Price</label><input id="price-{{ p.id }}" class="form-control" type="number" name="price" min="0" step="0.01" value="{{ p.price }}" required></div>
+            <div class="col-lg-2"><label class="visually-hidden" for="stock-{{ p.id }}">Stock</label><input id="stock-{{ p.id }}" class="form-control" type="number" name="stock" min="0" step="1" value="{{ p.stock_qty }}" required></div>
+            <div class="col-lg-2"><input class="form-control" name="hsn_sac" maxlength="8" placeholder="HSN/SAC" value="{{ p.hsn_sac or '' }}"></div><div class="col-lg-1"><input class="form-control" type="number" name="gst_rate" min="0" max="100" step="0.01" value="{{ p.gst_rate or 0 }}" title="GST rate %"></div><div class="col-lg-1"><span class="badge {{ 'bg-success' if p.is_listed else 'bg-secondary' }}">{{ 'Listed' if p.is_listed else 'Hidden' }}</span></div>
+            <div class="col-lg-2 d-flex gap-2"><button class="btn btn-sm btn-primary">Save</button></form>
+              <form method="post" action="{{ url_for('shop.toggle_product_listing', product_id=p.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-secondary">{{ 'Hide' if p.is_listed else 'List' }}</button></form></div>
+        </td>
+      </tr>
+    {% else %}<tr><td colspan="5" class="text-center py-4">No products yet. Add your first product above.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

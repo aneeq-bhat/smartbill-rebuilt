@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — SmartBill{% endblock %}
+{% block content %}
+<section class="container-xl py-4 py-lg-5">
+  <a class="text-decoration-none small" href="{{ url_for('consumer.marketplace') }}">← Back to marketplace</a>
+  <div class="row g-4 g-lg-5 mt-1 align-items-start">
+    <div class="col-lg-6"><div class="product-placeholder product-showcase d-flex align-items-center justify-content-center sb-reveal"><span class="product-monogram">{{ product.name[:1]|upper }}</span></div></div>
+    <div class="col-lg-6"><div class="workspace-card p-4 p-lg-5 sb-reveal">
+      <div class="eyebrow">{{ product.shop_name }}</div><h1 class="display-5 fw-bold mt-3">{{ product.name }}</h1>
+      <p class="text-secondary mt-3">{{ product.description or 'A product available from this approved local shop.' }}</p>
+      <div class="d-flex align-items-end gap-3 my-4"><span class="display-6 fw-bold">₹{{ '%.2f'|format(product.price) }}</span><span class="status-chip mb-2">{{ product.stock_qty }} available</span></div>
+      {% if session.get('role') == 'consumer' %}
+      <form method="post" action="{{ url_for('consumer.cart_add', product_id=product.id) }}" class="d-flex flex-wrap gap-2 align-items-end">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div><label class="form-label" for="quantity">Quantity</label><input class="form-control" id="quantity" type="number" name="quantity" min="1" max="{{ [product.stock_qty, 100]|min }}" value="1" style="max-width:110px"></div><button class="btn btn-accent rounded-pill px-4">Add to cart</button><button class="btn btn-outline-dark rounded-pill px-3" type="submit" formaction="{{ url_for('consumer.wishlist_add', product_id=product.id) }}" formmethod="post">♡ Save</button>
+      </form>
+      {% else %}<a class="btn btn-accent rounded-pill px-4" href="{{ url_for('auth.consumer_login') }}">Sign in to purchase</a>{% endif %}
+      <hr class="my-4"><h2 class="h6 text-uppercase">Sold by</h2><h3 class="h5">{{ product.shop_name }}</h3>{% if product.shop_description %}<p class="text-secondary">{{ product.shop_description }}</p>{% endif %}{% if product.shop_address %}<p class="small text-secondary mb-0">{{ product.shop_address }}</p>{% endif %}
+    </div></div>
+  </div>
+</section>
+{% endblock %}

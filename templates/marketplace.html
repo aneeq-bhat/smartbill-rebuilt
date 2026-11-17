@@ -1,3 +1,31 @@
-{% extends "base.html" %}{% block content %}<h1 class="h2 mb-2">Marketplace</h1><p class="text-secondary mb-4">Products from approved shops.</p>
-<div class="row g-3">{% for p in products %}<div class="col-sm-6 col-lg-4"><div class="panel h-100"><div class="eyebrow">{{ p.shop_name }}</div><h2 class="h5 mt-2">{{ p.name }}</h2><p class="text-secondary">{{ p.description or 'Available from this local shop.' }}</p><div class="fw-bold fs-5 mb-3">₹{{ '%.2f'|format(p.price) }}</div>
-{% if session.get('role')=='consumer' %}<form method="post" action="/marketplace/order/{{ p.id }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div class="input-group"><input class="form-control" type="number" name="quantity" value="1" min="1" max="100"><button class="btn btn-primary">Order</button></div></form>{% else %}<a href="/consumer/login">Sign in as consumer to order</a>{% endif %}</div></div>{% else %}<p>No products listed yet.</p>{% endfor %}</div>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Marketplace — SmartBill{% endblock %}
+{% block content %}
+<section class="container-xl py-5">
+  <div class="page-hero p-4 p-lg-5 mb-4 sb-reveal">
+    <div class="eyebrow">DISCOVER LOCAL COMMERCE</div>
+    <div class="row align-items-end g-4">
+      <div class="col-lg-8"><h1 class="display-4 fw-bold mb-3">Your neighbourhood, <span class="text-accent">within reach.</span></h1><p class="lead text-secondary mb-0">Find products from approved local shops, compare prices and shop nearby businesses.</p></div>
+      <div class="col-lg-4 text-lg-end">{% if session.get('role') == 'consumer' %}<a class="btn btn-accent rounded-pill px-4" href="{{ url_for('consumer.cart') }}">View cart · {{ cart_count|default(0) }}</a>{% else %}<a class="btn btn-accent rounded-pill px-4" href="{{ url_for('auth.consumer_login') }}">Sign in to shop</a>{% endif %}</div>
+    </div>
+  </div>
+  <form method="get" action="{{ url_for('consumer.marketplace') }}" class="workspace-card p-3 p-lg-4 mb-4 sb-reveal">
+    <div class="row g-3 align-items-end">
+      <div class="col-lg-8"><label class="form-label" for="market-search">Search products and local shops</label><input id="market-search" class="form-control form-control-lg" type="search" name="q" value="{{ search }}" placeholder="Try a product or shop name" maxlength="80"></div>
+      <div class="col-lg-2"><label class="form-label" for="market-sort">Sort by</label><select id="market-sort" class="form-select form-select-lg" name="sort"><option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>Recommended</option><option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: low to high</option><option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: high to low</option><option value="name" {% if sort == 'name' %}selected{% endif %}>Product name</option><option value="shop" {% if sort == 'shop' %}selected{% endif %}>Shop name</option></select></div>
+      <div class="col-lg-2 d-grid"><button class="btn btn-accent btn-lg rounded-pill">Search</button></div>
+    </div>
+  </form>
+  <div class="d-flex justify-content-between align-items-center mb-3"><div class="eyebrow">LOCAL PRODUCT COLLECTION</div><span class="result-count">{{ products|length }} results{% if search %} for “{{ search }}”{% endif %}</span></div>
+  <div class="row g-4">
+  {% for p in products %}
+    <div class="col-sm-6 col-xl-4"><article class="workspace-card product-card h-100 p-4 sb-reveal">
+      <div class="product-placeholder mb-4 d-flex align-items-center justify-content-center"><span class="product-monogram">{{ p.name[:1]|upper }}</span></div>
+      <div class="d-flex justify-content-between gap-2 align-items-center"><span class="subtle-tag">{{ p.shop_name }}</span><span class="status-chip">{{ p.stock_qty }} in stock</span></div>
+      <h2 class="h4 mt-3 mb-2">{{ p.name }}</h2><p class="text-secondary flex-grow-1">{{ p.description or 'Available from this local shop.' }}</p>
+      <div class="d-flex justify-content-between align-items-end gap-2 mt-3"><div><div class="small text-secondary">PRICE</div><div class="fs-3 fw-bold">₹{{ '%.2f'|format(p.price) }}</div></div><a class="btn btn-outline-light rounded-pill" href="{{ url_for('consumer.product_detail', product_id=p.id) }}">View details</a></div>
+    </article></div>
+  {% else %}<div class="col-12"><div class="workspace-card p-5 text-center"><h2 class="h4">No matching products found</h2><p class="text-secondary">Try another search term or clear your filters.</p><a class="btn btn-accent rounded-pill" href="{{ url_for('consumer.marketplace') }}">Clear search</a></div></div>{% endfor %}
+  </div>
+</section>
+{% endblock %}

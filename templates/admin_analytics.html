@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Platform analytics — SmartBill{% endblock %}
+{% block content %}
+<section class="dashboard-shell">
+  <div class="container-xl py-4">
+    <div class="dashboard-heading">
+      <div><div class="eyebrow dark-eyebrow">PRIVATE PLATFORM INTELLIGENCE</div><h1>Platform analytics.</h1><p>Operational overview for the last 30 days, with current shop and order rankings.</p></div>
+      <a class="btn btn-outline-dark rounded-pill" href="{{ url_for('admin.dashboard') }}">← Control center</a>
+    </div>
+    <div class="row g-3 mt-2">
+      <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>New users · 30 days</span><i>♙</i></div><div class="metric-value">{{ overview.users_30d }}</div><small>Registered accounts</small></div></div>
+      <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>Orders · 30 days</span><i>↗</i></div><div class="metric-value">{{ overview.orders_30d }}</div><small>Orders created</small></div></div>
+      <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>Order value · 30 days</span><i>₹</i></div><div class="metric-value">₹{{ '%.2f'|format(overview.gmv_30d or 0) }}</div><small>Excludes cancelled orders; not recognized revenue</small></div></div>
+      <div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>Active shops</span><i>⌂</i></div><div class="metric-value">{{ overview.active_shops }}</div><small>Currently active</small></div></div>
+    </div>
+    <div class="row g-4 mt-1">
+      <div class="col-lg-5"><div class="workspace-card h-100"><div class="workspace-card-head"><div><div class="eyebrow dark-eyebrow">ORDER MIX</div><h2>Orders by status</h2><p>All-time order counts grouped by current status.</p></div></div>
+        {% if order_status %}<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Status</th><th class="text-end">Orders</th></tr></thead><tbody>{% for row in order_status %}<tr><td><span class="status-chip">{{ row.status|title }}</span></td><td class="text-end fw-semibold">{{ row.total }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No orders recorded yet.</p>{% endif %}
+      </div></div>
+      <div class="col-lg-7"><div class="workspace-card h-100"><div class="workspace-card-head"><div><div class="eyebrow dark-eyebrow">SHOP PERFORMANCE</div><h2>Top shops by order value</h2><p>All-time order value, excluding cancelled orders.</p></div></div>
+        {% if top_shops %}<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Shop</th><th class="text-end">Orders</th><th class="text-end">Order value</th></tr></thead><tbody>{% for shop in top_shops %}<tr><td class="fw-semibold">{{ shop.name }}</td><td class="text-end">{{ shop.order_count }}</td><td class="text-end">₹{{ '%.2f'|format(shop.order_value or 0) }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-secondary mb-0">No shops recorded yet.</p>{% endif %}
+      </div></div>
+    </div>
+    <div class="workspace-card mt-4"><div class="workspace-card-head"><div><div class="eyebrow dark-eyebrow">RECENT ACTIVITY</div><h2>Daily order volume</h2><p>Last 14 calendar days. Missing dates represent zero orders.</p></div></div>
+      {% if recent_activity %}<div class="d-flex flex-wrap gap-2 align-items-end" style="min-height:150px">{% for day in recent_activity %}<div class="text-center flex-fill" style="min-width:48px"><div class="small fw-semibold mb-1">{{ day.total }}</div><div class="rounded-top bg-primary" style="height:{{ [day.total * 12, 8]|max }}px;max-height:110px"></div><small class="text-secondary">{{ day.day[5:] }}</small></div>{% endfor %}</div>{% else %}<p class="text-secondary mb-0">No orders in the last 14 days.</p>{% endif %}
+    </div>
+    <p class="small text-secondary mt-3">These are operational marketplace metrics. Order value is not accounting revenue, cash received, or GST turnover. Payment status is not yet integrated.</p>
+  </div>
+</section>
+{% endblock %}

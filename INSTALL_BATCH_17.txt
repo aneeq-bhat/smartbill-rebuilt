@@ -1,0 +1,38 @@
+SMARTBILL — BATCH 17: GST INVOICING
+
+WHAT THIS ADDS
+- Shop GST registration flag, GSTIN, state code and state name settings.
+- Product-level HSN/SAC and configurable GST rate.
+- Optional customer GSTIN and state code.
+- Invoice tax snapshots: taxable value, CGST, SGST and IGST per line.
+- Intra-state split (CGST + SGST) and inter-state IGST calculation.
+- GST tax invoice print layout and rate-wise GST sales summary.
+
+BACKUP FIRST
+1. Commit or copy your current project before applying this patch.
+2. Do not include or overwrite your .env file.
+
+APPLY
+1. Extract this ZIP into the root of smartbill-rebuilt, preserving folders.
+2. Activate your existing virtual environment.
+3. Run: pip install -r requirements.txt
+4. Run: python -m compileall -q app.py blueprints gst_calculations.py
+5. Run: python -m flask --app app init-gst-invoicing
+6. Start locally: python -m flask --app app run
+
+SETUP ORDER
+1. Sign in as a shopkeeper.
+2. Open GST settings and save registration status, GSTIN and supplier state.
+3. Edit each product and save its HSN/SAC and GST rate. Rates default to 0.
+4. Add customer GSTIN and state code in the customer form when available.
+5. Create an invoice and confirm place-of-supply state code.
+6. Open GST reports to view aggregated invoice tax snapshots.
+
+IMPORTANT LIMITATIONS
+- Product prices are treated as taxable values before GST; tax is added on top.
+- GST rates are configurable, not supplied as an official rate catalogue. Verify HSN/SAC and rates against current official GST schedules.
+- GSTIN validation checks format only; it does not query the GST portal or verify registration.
+- The current intra/inter-state decision uses supplier state code versus place-of-supply state code. Complex place-of-supply rules, SEZ, exports, reverse charge, composition scheme, exempt/nil-rated distinctions, cess, discounts, credit/debit notes, e-invoicing, e-way bills and statutory return filing are not implemented.
+- GST sales summary is an internal operational report, not GSTR-1/3B or a filing-ready return.
+- Existing invoices are not recalculated or rewritten by this migration.
+- Run this migration against the configured TiDB database only after backing it up. It is designed to be safely rerun.

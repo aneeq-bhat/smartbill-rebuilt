@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import query_one, execute
-from security import rotate_session, login_limited
+from security import rotate_session, login_limited, reset_login_attempts
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -18,7 +18,10 @@ def login_form(role, endpoint, title):
             flash("Email or password is incorrect.", "danger")
         elif user["status"] != "active":
             flash("Your account is not active. Shopkeeper accounts require Super Admin approval.", "warning")
+        elif not user.get("email_verified", 1):
+            flash("Verify your email before signing in. You can request a new verification link below.", "warning")
         else:
+            reset_login_attempts(key)
             rotate_session(user)
             return redirect(url_for({"super_admin":"admin.dashboard","shopkeeper":"shop.dashboard","consumer":"consumer.dashboard"}[role]))
     return render_template("login.html", title=title, endpoint=endpoint)
@@ -52,12 +55,26 @@ def shop_register():
             try:
                 conn = __import__("db").get_db()
                 cur = conn.cursor()
-                cur.execute("INSERT INTO users (name,email,password_hash,role,status) VALUES (%s,%s,%s,'shopkeeper','pending')",
+                cur.execute("INSERT INTO users (name,email,password_hash,role,status,email_verified) VALUES (%s,%s,%s,'shopkeeper','pending',0)",
                             (name,email,generate_password_hash(password)))
                 uid = cur.lastrowid
                 cur.execute("INSERT INTO shops (owner_user_id,name,slug,status) VALUES (%s,%s,%s,'pending')",(uid,shop,f"{slug}-{uid}"))
                 conn.commit()
-                flash("Registration submitted. Wait for Super Admin approval.", "success")
+                from blueprints.notifications import notify_superadmins
+                notify_superadmins("shop_registration", "New shop registration",
+                                   f"{shop} submitted a registration for review.",
+                                   "/admin/shops", f"shop-registration:{uid}")
+                try:
+                    from account_security import send_verification_email
+                    sent = send_verification_email(uid, email)
+                    if sent:
+                        flash("Registration submitted. Verify your email and wait for Super Admin approval.", "success")
+                    else:
+                        flash("Registration submitted, but email delivery is not configured. Contact the administrator to verify your email.", "warning")
+                except Exception:
+                    from flask import current_app
+                    current_app.logger.exception("Shopkeeper verification email failed")
+                    flash("Registration submitted. Email delivery failed; contact the administrator for verification.", "warning")
                 return redirect(url_for("auth.shop_login"))
             except Exception:
                 __import__("db").get_db().rollback()
@@ -77,9 +94,19 @@ def consumer_register():
         elif query_one("SELECT id FROM users WHERE email=%s",(email,)):
             flash("An account with that email already exists.","danger")
         else:
-            execute("INSERT INTO users (name,email,password_hash,role,status) VALUES (%s,%s,%s,'consumer','active')",
+            user_id = execute("INSERT INTO users (name,email,password_hash,role,status,email_verified) VALUES (%s,%s,%s,'consumer','active',0)",
                     (name,email,generate_password_hash(password)))
-            flash("Account created. You can sign in.","success")
+            try:
+                from account_security import send_verification_email
+                sent = send_verification_email(user_id, email)
+                if sent:
+                    flash("Account created. Check your email to verify your address before signing in.", "success")
+                else:
+                    flash("Account created, but email delivery is not configured. Contact the administrator to verify your email.", "warning")
+            except Exception:
+                from flask import current_app
+                current_app.logger.exception("Consumer verification email failed")
+                flash("Account created. Email delivery failed; contact the administrator for verification.", "warning")
             return redirect(url_for("auth.consumer_login"))
     return render_template("register_consumer.html")
 

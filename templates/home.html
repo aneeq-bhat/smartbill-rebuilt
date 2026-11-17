@@ -1,14 +1,31 @@
-{% extends "base.html" %}{% block title %}SmartBill | Business, billing and shopping{% endblock %}
+{% extends "base.html" %}{% block title %}SmartBill — Local commerce, reimagined{% endblock %}
 {% block content %}
-<section class="hero p-4 p-md-5 rounded-4 mb-4">
- <span class="eyebrow">BUSINESS MANAGEMENT · DIGITAL COMMERCE</span>
- <h1 class="display-4 fw-bold mt-3">One platform.<br>Three connected experiences.</h1>
- <p class="lead col-lg-8">Billing and inventory for local businesses, with a marketplace for their customers.</p>
- <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-light btn-lg" href="/shopkeeper/register">Register your shop</a><a class="btn btn-outline-light btn-lg" href="/marketplace">Explore marketplace</a></div>
+<section class="hero-shell">
+ <div class="hero-grid"></div><div class="container-xl hero-content">
+  <div class="row align-items-center g-5">
+   <div class="col-lg-6 hero-copy">
+    <div class="eyebrow"><span class="pulse-dot"></span> THE OPERATING SYSTEM FOR LOCAL COMMERCE</div>
+    <h1>Big business tools.<br><span>Local business</span><br>ambition.</h1>
+    <p class="hero-lead">One connected platform to run your shop, manage every order and reach more customers. Simple to start. Built to grow.</p>
+    <div class="d-flex flex-wrap gap-3 mt-4"><a class="btn btn-accent btn-lg rounded-pill px-4" href="{{ url_for('auth.shop_register') }}">Bring your business online <span>↗</span></a><a class="btn btn-ghost-light btn-lg rounded-pill px-4" href="{{ url_for('consumer.marketplace') }}">Explore marketplace</a></div>
+    <div class="hero-proof"><div class="proof-avatars"><i>A</i><i>S</i><i>+</i></div><span>Built for independent businesses<br><b>and the people who shop local.</b></span></div>
+   </div>
+   <div class="col-lg-6"><div class="visual-stage" data-tilt>
+    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="stage-glow"></div>
+    <div class="glass-panel panel-main"><div class="mock-top"><span class="mock-dots"><i></i><i></i><i></i></span><span>BUSINESS OVERVIEW</span><span class="live-pill">● LIVE</span></div><div class="mock-greeting">Good morning, Aneeq <span>✦</span></div><div class="mock-sub">Here's what's happening with your shop.</div><div class="mock-stats"><div><small>REVENUE</small><strong>₹48,290</strong><em>↗ 12.8%</em></div><div><small>ORDERS</small><strong>128</strong><em>↗ 8.2%</em></div></div><div class="chart-label">Weekly performance <span>Last 7 days⌄</span></div><div class="mini-chart"><i style="height:35%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:72%"></i><i style="height:58%"></i><i style="height:88%"></i><i style="height:100%"></i></div><div class="chart-days"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div>
+    <div class="float-card float-order"><span class="float-icon">↗</span><div><small>NEW ORDER</small><b>Order #SB-1048</b><small class="green-text">Just received</small></div></div>
+    <div class="float-card float-stock"><span class="stock-ring">✓</span><div><small>INVENTORY</small><b>Stock in control</b><small>All products updated</small></div></div>
+    <div class="stage-caption">YOUR BUSINESS, IN SYNC <span>✦</span></div>
+   </div></div>
+  </div>
+ </div>
+ <div class="hero-bottom container-xl"><span>ONE PLATFORM. THREE POSSIBILITIES.</span><span>SCROLL TO EXPLORE ↓</span></div>
 </section>
-<div class="row g-3">
- <div class="col-md-4"><div class="panel h-100"><h3>Super Admin</h3><p>Manage platform access and approve shops.</p><a href="/admin/login">Admin sign in</a></div></div>
- <div class="col-md-4"><div class="panel h-100"><h3>Shopkeepers</h3><p>Manage products, stock and customer records.</p><a href="/shopkeeper/login">Shopkeeper sign in</a></div></div>
- <div class="col-md-4"><div class="panel h-100"><h3>Consumers</h3><p>Browse listed products and place orders.</p><a href="/consumer/register">Create consumer account</a></div></div>
-</div>
+<section class="section-light py-5" id="platform"><div class="container-xl py-lg-4"><div class="section-heading text-center mx-auto"><div class="eyebrow dark-eyebrow">ONE ECOSYSTEM, BUILT AROUND YOU</div><h2>Everything works <span>better together.</span></h2><p>From the first product listing to the final receipt, SmartBill brings your business and customers into one seamless experience.</p></div>
+ <div class="row g-3 mt-4"><div class="col-md-4"><article class="feature-card feature-dark h-100"><div class="feature-icon">⌘</div><div class="feature-kicker">01 / FOR BUSINESSES</div><h3>Your shop.<br>Your command.</h3><p>Products, stock, orders and billing in one focused workspace.</p><a href="{{ url_for('auth.shop_register') }}">Start selling <span>↗</span></a><div class="feature-art art-business"><div class="art-window"><i></i><i></i><i></i><b>₹</b></div></div></article></div>
+ <div class="col-md-4"><article class="feature-card feature-blue h-100"><div class="feature-icon">◇</div><div class="feature-kicker">02 / FOR SHOPPERS</div><h3>Discover more.<br>Shop smarter.</h3><p>Find products from local shops and keep every order in reach.</p><a href="/marketplace">Explore marketplace <span>↗</span></a><div class="feature-art art-market"><div class="product-orb orb-a">✦</div><div class="product-orb orb-b">◈</div><div class="product-orb orb-c">⌁</div></div></article></div>
+ <div class="col-md-4"><article class="feature-card feature-sand h-100"><div class="feature-icon">▤</div><div class="feature-kicker">03 / FOR EVERY TRANSACTION</div><h3>Clarity in<br>every number.</h3><p>Stay on top of orders, customer activity and business performance.</p><a href="{{ url_for('auth.shop_register') }}">See what's possible <span>↗</span></a><div class="feature-art art-receipt"><div class="receipt-card"><small>SMARTBILL RECEIPT</small><b>₹ 2,450.00</b><i></i><i></i><i></i></div></div></article></div></div>
+ </div></section>
+<section class="business-band py-5" id="for-business"><div class="container-xl py-lg-4"><div class="row align-items-center g-4"><div class="col-lg-7"><div class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</div><h2>Make room for<br><span>what's next.</span></h2><p>Bring your business online, simplify daily operations and meet more customers — without adding complexity.</p><a class="btn btn-accent btn-lg rounded-pill px-4" href="{{ url_for('auth.shop_register') }}">Register your shop ↗</a></div><div class="col-lg-5"><div class="band-card"><div class="band-card-top"><span>SMARTBILL / INSIGHTS</span><span>✦</span></div><div class="band-number">01<span> platform</span></div><div class="band-rule"></div><div class="band-list"><span>Products & inventory <b>↗</b></span><span>Orders & fulfilment <b>↗</b></span><span>Customers & commerce <b>↗</b></span></div></div></div></div></div></section>
+<section class="section-light py-5"><div class="container-xl py-4 text-center"><div class="eyebrow dark-eyebrow">READY WHEN YOU ARE</div><h2 class="closing-title">Let's build your <span>next move.</span></h2><p class="section-copy">Start with the tools you need today. Grow into everything you need tomorrow.</p><div class="d-flex flex-wrap justify-content-center gap-3 mt-4"><a class="btn btn-dark btn-lg rounded-pill px-4" href="{{ url_for('auth.shop_register') }}">I'm a business owner ↗</a><a class="btn btn-outline-dark btn-lg rounded-pill px-4" href="{{ url_for('consumer.marketplace') }}">I'm here to shop</a></div></div></section>
 {% endblock %}

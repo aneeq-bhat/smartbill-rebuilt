@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Secure payment — SmartBill{% endblock %}
+{% block content %}
+<section class="container-xl py-5" style="max-width:760px">
+  <div class="panel p-4 p-md-5 text-center">
+    <div class="eyebrow">SECURE CHECKOUT</div>
+    <h1 class="display-6 fw-bold mb-2">Complete your payment<span class="text-accent">.</span></h1>
+    <p class="text-secondary">Your payment is processed securely by Razorpay.</p>
+    <div class="display-5 fw-bold my-4">₹{{ '%.2f'|format(amount_rupees) }}</div>
+    <button id="pay-now" class="btn btn-accent rounded-pill px-5 py-3">Pay securely <span aria-hidden="true">↗</span></button>
+    <p class="small text-secondary mt-3">Do not refresh or close this page while payment is processing.</p>
+  </div>
+</section>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+(() => {
+  const options = {
+    key: {{ key_id|tojson }}, amount: {{ amount|tojson }}, currency: "INR",
+    name: "SmartBill", description: "Marketplace purchase",
+    order_id: {{ razorpay_order_id|tojson }},
+    prefill: {name: {{ name|tojson }}, email: {{ email|tojson }}},
+    theme: {color: "#b8f36b"},
+    handler: function (response) {
+      const form = document.createElement("form"); form.method = "POST"; form.action = {{ url_for('payments.verify_payment')|tojson }};
+      const fields = {...response, csrf_token: {{ csrf|tojson }}};
+      for (const [name, value] of Object.entries(fields)) { const input = document.createElement("input"); input.type = "hidden"; input.name = name; input.value = value; form.appendChild(input); }
+      document.body.appendChild(form); form.submit();
+    },
+    modal: {ondismiss: function () { window.location.href = {{ url_for('consumer.cart')|tojson }}; }}
+  };
+  const checkout = new Razorpay(options);
+  document.getElementById("pay-now").addEventListener("click", () => checkout.open());
+})();
+</script>
+{% endblock %}

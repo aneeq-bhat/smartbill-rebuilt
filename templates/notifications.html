@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Notifications · SmartBill{% endblock %}
+{% block content %}
+<section class="mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+  <div>
+    <p class="text-uppercase small fw-semibold text-primary mb-1">Your activity</p>
+    <h1 class="display-6 fw-bold mb-1">Notifications</h1>
+    <p class="text-secondary mb-0">Order, payment, return and account updates in one place.</p>
+  </div>
+  {% if unread_count %}
+  <form method="post" action="{{ url_for('notifications.mark_all_read') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-outline-primary">Mark all as read</button>
+  </form>
+  {% endif %}
+</section>
+<div class="row g-3">
+  <div class="col-12 col-xl-9">
+    {% for item in notifications %}
+    <article class="card border-0 shadow-sm mb-3 {% if not item.read_at %}border-start border-4 border-primary{% endif %}">
+      <div class="card-body d-flex justify-content-between align-items-start gap-3">
+        <div class="min-w-0">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+            <span class="badge text-bg-light">{{ item.category|replace('_',' ')|title }}</span>
+            {% if not item.read_at %}<span class="badge text-bg-primary">New</span>{% endif %}
+            <small class="text-secondary">{{ item.created_at }}</small>
+          </div>
+          <h2 class="h5 mb-1">{{ item.title }}</h2>
+          <p class="text-secondary mb-0">{{ item.body }}</p>
+        </div>
+        {% if not item.read_at %}
+        <form method="post" action="{{ url_for('notifications.mark_read', notification_id=item.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-sm btn-outline-secondary">Open</button>
+        </form>
+        {% elif item.target_url and item.target_url.startswith('/') and not item.target_url.startswith('//') %}
+        <a class="btn btn-sm btn-outline-secondary" href="{{ item.target_url }}">View</a>
+        {% endif %}
+      </div>
+    </article>
+    {% else %}
+    <div class="card border-0 shadow-sm"><div class="card-body py-5 text-center">
+      <div class="display-5 mb-3">✦</div><h2 class="h4">You're all caught up</h2>
+      <p class="text-secondary mb-0">New updates will appear here when something needs your attention.</p>
+    </div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

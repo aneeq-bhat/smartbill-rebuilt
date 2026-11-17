@@ -1,0 +1,35 @@
+SMARTBILL BATCH 15 — IN-APP NOTIFICATIONS
+
+This patch adds a role-scoped in-app notification centre and notifications for:
+- Paid order creation (consumer and affected shopkeepers)
+- Low stock after paid orders (threshold: 5 units)
+- Shopkeeper order status changes (consumer)
+- New shop registration (active Super Admins)
+- Return requests and return status changes
+- Refund status webhook events
+- Recorded manual seller settlements
+
+INSTALL
+1. Back up the project folder.
+2. From the project root, extract this ZIP:
+   unzip -o ~/Downloads/SmartBill_Notifications_Batch_15.zip -d .
+3. Apply the database migration once:
+   python -m flask --app app init-notifications
+4. Restart the Flask application.
+
+DATABASE
+Creates migrations/015_notifications.sql. It is safe to rerun (CREATE TABLE IF NOT EXISTS).
+It does not modify existing users, orders, payments, refunds, returns, or seller ledger rows.
+
+ROUTES
+GET  /notifications
+POST /notifications/<notification_id>/read
+POST /notifications/read-all
+
+IMPORTANT
+- Notifications are in-app only. SMTP, SMS, push notifications and realtime WebSockets are not included.
+- Low-stock alert threshold is currently hard-coded at 5 units.
+- The notification centre displays the most recent 100 notifications per user.
+- Notification inserts are best-effort and logged if they fail; they do not roll back completed payments/orders.
+- Run init-notifications before enabling live payment webhooks so notification records can be stored.
+- Keep CSRF enabled; all notification mutations use POST forms with csrf_token.

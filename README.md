@@ -102,3 +102,7 @@ smartbill/
   static/
   tests/
 ```
+
+
+## Batch 17 — GST invoicing
+See `INSTALL_BATCH_17.txt` for migration and setup instructions. GST rates and HSN/SAC classifications must be verified by the seller; the built-in report is not a statutory GST return.

@@ -1,0 +1,32 @@
+SMARTBILL BATCH 16 — EMAIL VERIFICATION & ACCOUNT RECOVERY
+
+1. Back up the project.
+2. Extract this ZIP into the project root, preserving the included paths.
+3. Install the existing requirements:
+   python -m pip install -r requirements.txt
+4. Configure SMTP in the local .env (never commit or share it):
+   MAIL_SERVER=smtp.your-provider.example
+   MAIL_PORT=587
+   MAIL_USERNAME=your-smtp-username
+   MAIL_PASSWORD=your-smtp-password
+   MAIL_DEFAULT_SENDER=SmartBill <no-reply@your-domain.example>
+   MAIL_USE_TLS=1
+   MAIL_USE_SSL=0
+5. Apply the additive database migration once:
+   python -m flask --app app init-account-security
+6. Restart the app.
+
+Routes:
+- /account/verify/<token>
+- /account/verify/resend
+- /account/forgot-password
+- /account/reset/<token>
+
+Security notes:
+- Existing accounts are marked verified by default during migration to avoid locking out existing users.
+- New consumer and shopkeeper registrations are unverified until the email link is confirmed.
+- Tokens are cryptographically random, only SHA-256 digests are stored, and each token is single-use and time-limited.
+- Password reset responses do not reveal whether an email exists.
+- Email delivery requires a working SMTP provider. If SMTP is not configured, verification and reset email delivery cannot work.
+- Configure MAIL_* values in the hosting provider's secret environment for production. Do not put SMTP passwords in source control.
+- This batch does not implement MFA, SMS OTP, account lockout persistence across workers, or a full session revocation registry.

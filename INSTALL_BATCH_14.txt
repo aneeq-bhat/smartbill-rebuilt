@@ -1,0 +1,28 @@
+SMARTBILL BATCH 14 — RETURNS AND AFTER-SALES REVIEW
+
+Files:
+  app.py
+  blueprints/returns.py
+  templates/order_detail.html
+  templates/consumer_returns.html
+  templates/admin_returns.html
+  templates/base.html
+  migrations/014_returns.sql
+
+Install from the project root:
+  unzip -o ~/Downloads/SmartBill_Returns_Batch_14.zip -d .
+  python -m compileall -q app.py blueprints
+  python -m flask --app app init-returns
+
+Features:
+- Consumers may request a return for completed orders.
+- Consumers can view their return-request history.
+- Super Admin can approve/reject requests and mark approved goods received.
+- Admin can navigate to the existing Razorpay refund centre.
+
+Important:
+- This batch does NOT automatically issue refunds.
+- After approving a return and confirming goods receipt, an authorized admin must assess and process any refund separately through the existing refund centre.
+- This batch does not implement courier pickup, shipping labels, dispute/chargeback integration, or inventory restocking.
+- Migration creates one return request per order and is safe to rerun.
+- Keep .env and payment credentials private.

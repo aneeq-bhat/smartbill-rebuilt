@@ -1,0 +1,8 @@
+SMARTBILL BATCH 09 — SHOPKEEPER ANALYTICS
+
+Extract from the project root:
+  unzip -o ~/Downloads/SmartBill_Analytics_Batch_09.zip -d .
+
+Adds GET /shopkeeper/analytics and a dashboard link. Uses existing invoices, orders, order_items and products tables. No migration.
+
+Invoice revenue and order value are shown separately to avoid double counting. Low stock threshold is currently 5 units.

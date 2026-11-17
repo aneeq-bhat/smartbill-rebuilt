@@ -1,0 +1,23 @@
+SMARTBILL BATCH 08 — CONSUMER ACCOUNT EXPERIENCE
+
+Includes:
+- Consumer profile name editing (email remains read-only until verification exists)
+- Saved delivery addresses with default selection and deletion
+- Consumer wishlist
+- Consumer order detail / status timeline
+- Navigation and dashboard links
+
+INSTALL
+1. Back up your project folder.
+2. Extract this ZIP into the project root, preserving folders.
+3. Activate the project's .venv.
+4. Run the migration once (safe to rerun):
+   python -m flask --app app upgrade-consumer-features
+5. Do not run init-db against a database unless you have confirmed it is the intended SmartBill rebuild database.
+
+NOTES
+- This batch adds two tables: customer_addresses and wishlist_items.
+- Saved addresses are not yet connected to checkout/delivery assignment.
+- Order tracking displays the shop-managed order status; no courier integration exists.
+- Email change, OTP verification, payment, refunds and live shipping are not included.
+- Existing data is not deleted or rewritten.

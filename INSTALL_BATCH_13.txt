@@ -1,0 +1,31 @@
+SMARTBILL BATCH 13 — SELLER ONBOARDING & SETTLEMENT PREPARATION
+
+1. Back up your project folder before applying.
+2. From the project root, extract this ZIP:
+   unzip -o ~/Downloads/SmartBill_Seller_Settlements_Batch_13.zip -d .
+3. Apply the idempotent integration script:
+   python apply_batch_13.py
+4. Compile-check:
+   python -m compileall -q app.py blueprints
+5. Apply the database migration once:
+   python -m flask --app app init-seller-settlements
+
+WHAT THIS ADDS
+- Seller business profile and onboarding status checklist.
+- Admin-managed PAN, bank, address and Route application statuses.
+- Configurable platform commission (0% default; applies to future orders).
+- Seller earnings ledger rows created when Razorpay payment is captured and shop orders are created.
+- Ledger reversal when a shop rejects an order.
+- Seller portal and private Super Admin settlement/reconciliation screens.
+- Manual external payment reference recording.
+
+IMPORTANT LIMITS
+- Razorpay Route has NOT been applied for. This batch does not create linked accounts or transfer funds.
+- "Record as paid" records an external manual transfer reference only; SmartBill does not initiate or verify that transfer.
+- PAN/bank document uploads and KYC verification are not implemented. Admin status labels are operational records and must only be updated after external verification.
+- No automated seller payouts, Route transfers, transfer reversals, or tax withholding.
+- Commission defaults to 0%; set a rate only after deciding the commercial terms and disclosing them to sellers.
+- The migration depends on existing shops, users, orders and payment_transactions tables from prior batches.
+- Do not run init-db. Do not use live payment credentials until the complete payment and refund workflow has been tested.
+
+The archive overlays files at the project root. It does not include .env, .venv, .git, or user data.

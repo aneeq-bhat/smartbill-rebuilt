@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Your Cart — SmartBill{% endblock %}
+{% block content %}
+<section class="container-xl py-5">
+ <div class="eyebrow">YOUR SELECTION</div><h1 class="display-5 fw-bold mb-4">Shopping cart<span class="text-accent">.</span></h1>
+ {% if items %}<div class="row g-4"><div class="col-lg-8"><div class="panel p-3 p-md-4">
+ {% for item in items %}<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 py-3 {% if not loop.first %}border-top{% endif %}">
+  <div class="flex-grow-1"><div class="eyebrow">{{ item.shop_name }}</div><h2 class="h5 mb-1">{{ item.name }}</h2><div class="text-secondary small">₹{{ '%.2f'|format(item.price) }} each · {{ item.stock_qty }} in stock</div></div>
+  <form class="d-flex align-items-center gap-2" method="post" action="{{ url_for('consumer.cart_update', product_id=item.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input class="form-control" style="width:86px" type="number" name="quantity" min="1" max="100" value="{{ item.quantity }}" aria-label="Quantity"><button class="btn btn-outline-light btn-sm">Update</button></form>
+  <div class="fw-bold">₹{{ '%.2f'|format(item.line_total) }}</div><form method="post" action="{{ url_for('consumer.cart_remove', product_id=item.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-link text-danger p-1">Remove</button></form>
+ </div>{% endfor %}</div></div>
+ <div class="col-lg-4"><div class="panel p-4 sticky-top" style="top:100px"><div class="eyebrow">ORDER SUMMARY</div><div class="d-flex justify-content-between py-3"><span class="text-secondary">Subtotal</span><strong>₹{{ '%.2f'|format(subtotal) }}</strong></div><div class="d-flex justify-content-between border-top pt-3 fs-5"><strong>Total</strong><strong>₹{{ '%.2f'|format(subtotal) }}</strong></div><p class="small text-secondary mt-3">Secure online payment is powered by Razorpay. Orders are confirmed only after payment verification.</p><form method="post" action="{{ url_for('payments.create_payment') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-accent rounded-pill w-100 py-3">Continue to secure payment <span aria-hidden="true">↗</span></button></form><a class="btn btn-link w-100 mt-2" href="{{ url_for('consumer.marketplace') }}">Continue shopping</a></div></div></div>
+ {% else %}<div class="panel text-center p-5"><div class="display-4 mb-3">🛍️</div><h2 class="h3">Your cart is empty</h2><p class="text-secondary">Find something useful from a local shop.</p><a class="btn btn-accent rounded-pill px-4" href="{{ url_for('consumer.marketplace') }}">Explore marketplace</a></div>{% endif %}
+</section>
+{% endblock %}

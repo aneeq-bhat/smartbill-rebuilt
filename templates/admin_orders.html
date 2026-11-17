@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Platform orders — SmartBill{% endblock %}{% block content %}
+<section class="dashboard-shell"><div class="container-xl py-5">
+<div class="dashboard-heading"><div><div class="eyebrow dark-eyebrow">CONTROL CENTER / COMMERCE</div><h1>Platform orders.</h1><p>Cross-marketplace order activity and status.</p></div><a class="btn btn-outline-dark rounded-pill px-4" href="{{ url_for('admin.dashboard') }}">← Overview</a></div>
+<div class="workspace-card mt-4"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Order</th><th>Consumer</th><th>Shop</th><th>Total</th><th>Status</th><th>Placed</th></tr></thead><tbody>{% for o in orders %}<tr><td class="fw-bold">#{{ o.id }}</td><td>{{ o.consumer_name }}<small class="d-block text-secondary">{{ o.consumer_email }}</small></td><td>{{ o.shop_name }}</td><td>₹{{ '%.2f'|format(o.total) }}</td><td><span class="status-chip">{{ o.status|title }}</span></td><td>{{ o.created_at }}</td></tr>{% else %}<tr><td colspan="6" class="text-center text-secondary py-5">No orders have been placed yet.</td></tr>{% endfor %}</tbody></table></div></div>
+</div></section>{% endblock %}

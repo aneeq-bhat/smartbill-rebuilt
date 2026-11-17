@@ -1,0 +1,1 @@
+-- Batch 17 GST columns. The CLI command performs idempotent information_schema checks.
